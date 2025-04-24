@@ -1,0 +1,29 @@
+
+# Java / Spring Boot
+target/
+*.class
+*.jar
+*.war
+*.iml
+*.log
+*.db
+*.h2.db
+*.sqlite
+*.DS_Store
+
+# IDEs
+.idea/
+*.iws
+*.ipr
+*.bak
+
+# Sistema
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Node
+node_modules/
+dist/
