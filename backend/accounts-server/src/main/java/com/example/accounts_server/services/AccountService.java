@@ -1,11 +1,12 @@
 package com.example.accounts_server.services;
 
+import com.digitalmoney.accountservice.repositories.AccountRepository;
 import com.example.accounts_server.dto.AccountDTO;
 import com.example.accounts_server.dto.UpdateDTO;
 import com.example.accounts_server.dto.UserDTO;
 import com.example.accounts_server.entities.Account;
 import com.example.accounts_server.exceptions.ResourceNotFoundException;
-import com.example.accounts_server.repositories.AccountRepository;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
