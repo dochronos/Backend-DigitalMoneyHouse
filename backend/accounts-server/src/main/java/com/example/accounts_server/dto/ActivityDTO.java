@@ -1,4 +1,4 @@
-package com.example.accounts_server.DTOs;
+package com.example.accounts_server.dto;;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
