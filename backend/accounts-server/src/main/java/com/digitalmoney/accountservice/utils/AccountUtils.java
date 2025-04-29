@@ -1,11 +1,11 @@
-package com.example.accounts_server.services;
+package com.digitalmoney.accountservice.utils;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -13,13 +13,10 @@ import java.util.stream.Collectors;
 @Component
 public class AccountUtils {
 
-    @Value("C:\\Users\\Usuario-\\Desktop\\exe\\ProyectoFinalDH\\backend\\accounts-server\\src\\main\\java\\com\\example\\accounts_server\\services\\wordsAlias.txt")
-    private String wordsAliasPath;
-
     private final Random random = new Random();
 
     public String generateRandomCVU() {
-        String cvu = String.format("%022d", random.nextLong() & ((1L << 22 * 4) - 1));
+        String cvu = String.format("%022d", Math.abs(random.nextLong()));
         System.out.println("Generated CVU: " + cvu);
         return cvu;
     }
@@ -34,10 +31,10 @@ public class AccountUtils {
     }
 
     private List<String> loadWordsFromFile() {
-        try {
-            return Files.readAllLines(Paths.get(wordsAliasPath));
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new ClassPathResource("wordsAlias.txt").getInputStream()))) {
+            return reader.lines().collect(Collectors.toList());
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException("Error loading words file", e);
         }
     }

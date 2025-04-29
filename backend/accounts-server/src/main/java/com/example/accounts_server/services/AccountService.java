@@ -1,30 +1,25 @@
-package com.example.accounts_server.services;
+package com.digitalmoney.accountservice.service;
 
+import com.digitalmoney.accountservice.dto.AccountDTO;
+import com.digitalmoney.accountservice.dto.UpdateDTO;
+import com.digitalmoney.accountservice.dto.UserDTO;
+import com.digitalmoney.accountservice.entity.Account;
+import com.digitalmoney.accountservice.exceptions.ResourceNotFoundException;
 import com.digitalmoney.accountservice.repositories.AccountRepository;
-import com.example.accounts_server.dto.AccountDTO;
-import com.example.accounts_server.dto.UpdateDTO;
-import com.example.accounts_server.dto.UserDTO;
-import com.example.accounts_server.entities.Account;
-import com.example.accounts_server.exceptions.ResourceNotFoundException;
-
-import org.springframework.beans.factory.annotation.Value;
+import com.digitalmoney.accountservice.utils.AccountUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-
 @Service
 public class AccountService {
 
     private final AccountRepository accountRepository;
-
     private final AccountUtils accountUtils;
-    private final Random random = new Random();
 
-    @Value("C:\\Users\\Usuario-\\Desktop\\exe\\ProyectoFinalDH\\backend\\accounts-server\\src\\main\\java\\com\\example\\accounts_server\\services\\wordsAlias.txt")
-    private String wordsAliasPath;
+    private final Random random = new Random();
 
     public AccountService(AccountRepository accountRepository, AccountUtils accountUtils) {
         this.accountRepository = accountRepository;
@@ -54,7 +49,6 @@ public class AccountService {
 
         Account account = new Account(userDTO, cvu, alias);
 
-
         return accountRepository.save(account);
     }
 
@@ -65,6 +59,7 @@ public class AccountService {
         account.setBalance(account.getBalance() + amount);
         return accountRepository.save(account);
     }
+
     public List<AccountDTO> getAllAccounts() {
         return accountRepository.findAll().stream()
                 .map(AccountDTO::new)
@@ -84,6 +79,4 @@ public class AccountService {
 
         return new AccountDTO(account);
     }
-
-
 }
