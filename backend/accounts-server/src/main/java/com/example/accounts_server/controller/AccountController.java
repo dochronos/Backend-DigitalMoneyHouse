@@ -1,6 +1,6 @@
 package com.example.accounts_server.controller;
 
-import com.example.accounts_server.DTOs.*;
+import com.example.accounts_server.dto.*;
 import com.example.accounts_server.entities.Account;
 import com.example.accounts_server.exceptions.ResourceNotFoundException;
 import com.example.accounts_server.services.AccountService;
@@ -99,6 +99,4 @@ public class AccountController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }

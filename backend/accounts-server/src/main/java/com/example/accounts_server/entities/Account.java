@@ -1,8 +1,8 @@
 package com.example.accounts_server.entities;
 
-import com.example.accounts_server.DTOs.AccountDTO;
-import com.example.accounts_server.DTOs.UpdateDTO;
-import com.example.accounts_server.DTOs.UserDTO;
+import com.example.accounts_server.dto.AccountDTO;
+import com.example.accounts_server.dto.UpdateDTO;
+import com.example.accounts_server.dto.UserDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

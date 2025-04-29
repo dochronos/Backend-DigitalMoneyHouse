@@ -1,8 +1,8 @@
 package com.example.accounts_server.services;
 
-import com.example.accounts_server.DTOs.AccountDTO;
-import com.example.accounts_server.DTOs.UpdateDTO;
-import com.example.accounts_server.DTOs.UserDTO;
+import com.example.accounts_server.dto.AccountDTO;
+import com.example.accounts_server.dto.UpdateDTO;
+import com.example.accounts_server.dto.UserDTO;
 import com.example.accounts_server.entities.Account;
 import com.example.accounts_server.exceptions.ResourceNotFoundException;
 import com.example.accounts_server.repositories.AccountRepository;

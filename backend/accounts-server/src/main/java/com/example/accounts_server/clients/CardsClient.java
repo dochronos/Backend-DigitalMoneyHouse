@@ -1,6 +1,6 @@
 package com.example.accounts_server.clients;
 
-import com.example.accounts_server.DTOs.CardDTO;
+import com.example.accounts_server.dto.CardDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
