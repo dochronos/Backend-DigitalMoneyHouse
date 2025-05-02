@@ -1,9 +1,9 @@
 package com.example.activities_server.controllers;
 
-import com.example.activities_server.DTOs.AccountSummaryDTO;
-import com.example.activities_server.DTOs.ActivityDTO;
-import com.example.activities_server.DTOs.LoadMoneyRequest;
-import com.example.activities_server.DTOs.TransferRequest;
+import com.example.activities_server.dto.AccountSummaryDTO;
+import com.example.activities_server.dto.ActivityDTO;
+import com.example.activities_server.dto.LoadMoneyRequest;
+import com.example.activities_server.dto.TransferRequest;
 import com.example.activities_server.exceptions.ResourceNotFoundException;
 import com.example.activities_server.services.ActivityService;
 import org.springframework.http.HttpStatus;

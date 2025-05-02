@@ -12,11 +12,6 @@ public class FeignConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return new RequestInterceptor() {
-            @Override
-            public void apply(RequestTemplate template) {
-                template.header("X-Secret-Token", SECRET_TOKEN);
-            }
-        };
+        return template -> template.header("X-Secret-Token", SECRET_TOKEN);
     }
 }

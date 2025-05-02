@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,8 +25,10 @@ import java.util.Collections;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${security.secret-token}")
+    private String secretToken;
+
     private static final String SECRET_HEADER_NAME = "X-Secret-Token";
-    private static final String SECRET_TOKEN = "from-gateway";
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -39,33 +42,31 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new SecretTokenValidationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new SecretTokenValidationFilter(secretToken), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     public static class SecretTokenValidationFilter extends OncePerRequestFilter {
+
+        private final String expectedToken;
+
+        public SecretTokenValidationFilter(String expectedToken) {
+            this.expectedToken = expectedToken;
+        }
 
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
                 throws ServletException, IOException {
 
             String token = request.getHeader(SECRET_HEADER_NAME);
-            System.out.println("Received Secret Token: " + token); // Debugging
 
-            if (SECRET_TOKEN.equals(token)) {
-                System.out.println("Secret token is valid, proceeding with request.");
-
-                // Configura el contexto de seguridad si el token es válido
+            if (expectedToken.equals(token)) {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        "user", // Principal
-                        null, // Credentials
-                        Collections.emptyList() // Authorities
+                        "user", null, Collections.emptyList()
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 filterChain.doFilter(request, response);
             } else {
-                System.out.println("Secret token is invalid, denying request.");
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             }
         }

@@ -1,8 +1,8 @@
 package com.example.activities_server.services;
 
-import com.example.activities_server.DTOs.*;
 import com.example.activities_server.clients.AccountClient;
 import com.example.activities_server.clients.CardClient;
+import com.example.activities_server.dto.*;
 import com.example.activities_server.entities.Activity;
 import com.example.activities_server.exceptions.ResourceNotFoundException;
 import com.example.activities_server.repositories.ActivityRepository;

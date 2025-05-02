@@ -1,16 +1,17 @@
 package com.example.activities_server.clients;
 
-import com.example.activities_server.DTOs.AccountDTO;
-import com.example.activities_server.DTOs.AccountSearchRequest;
-import com.example.activities_server.DTOs.TransferRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "accounts-server", url = "http://localhost:8085/api")
+import com.example.activities_server.dto.AccountDTO;
+import com.example.activities_server.dto.AccountSearchRequest;
+import com.example.activities_server.dto.TransferRequest;
+
+@FeignClient(name = "accounts-server", url = "http://localhost:8085/api", configuration = FeignConfig.class)
 public interface AccountClient {
 
-    @PutMapping("/accounts/{userId}/balance") // Updated path
+    @PutMapping("/accounts/{userId}/balance")
     AccountDTO updateAccountBalance(@PathVariable("userId") Long userId, @RequestBody Double amount);
 
     @GetMapping("/accounts/{userId}")
@@ -19,6 +20,6 @@ public interface AccountClient {
     @PostMapping("/accounts/transfer")
     ResponseEntity<String> transfer(@RequestBody TransferRequest transferRequest);
 
-    @PostMapping("/accounts/search") // Cambiado a POST
+    @PostMapping("/accounts/search")
     ResponseEntity<AccountDTO> getAccountByCvuOrAlias(@RequestBody AccountSearchRequest request);
 }

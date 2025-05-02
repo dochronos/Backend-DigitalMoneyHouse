@@ -1,4 +1,4 @@
-package com.example.activities_server.DTOs;
+package com.example.activities_server.dto;
 
 import lombok.Data;
 
