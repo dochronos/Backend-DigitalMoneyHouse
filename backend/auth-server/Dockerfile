@@ -1,5 +1,10 @@
 # Dockerfile for Auth Server
-FROM openjdk:17-jdk-slim
-VOLUME /tmp
+FROM eclipse-temurin:21-jdk-alpine as runtime
+
+WORKDIR /app
+
+# Copiamos el JAR compilado
 COPY target/auth-server-*.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+# Ejecutamos el servicio
+ENTRYPOINT ["java", "-jar", "app.jar"]
