@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "activities")
 public class Activity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,6 +25,7 @@ public class Activity {
     private String date;
 
     @Column(name = "user_id", nullable = false)
+    @NotNull
     private Long userId;
 
     @Column(name = "origin", nullable = false)
@@ -41,6 +43,7 @@ public class Activity {
     @NotBlank
     private String type;
 
-    @Column(name = "cardId") //opcional
+    // Campo opcional que puede estar asociado a una tarjeta
+    @Column(name = "card_id")
     private Long cardId;
 }
