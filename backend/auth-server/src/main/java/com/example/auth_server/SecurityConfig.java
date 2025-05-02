@@ -20,54 +20,57 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * Configuración de seguridad para el microservicio de autenticación.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final String SECRET_HEADER_NAME = "X-Secret-Token"; // Changed to match the header used in gateway
-    private static final String SECRET_TOKEN = "from-gateway"; // Define your secret token here
+    private static final String SECRET_HEADER_NAME = "X-Secret-Token";
+    private static final String SECRET_TOKEN = "from-gateway";
 
+    /**
+     * Codificador de contraseñas utilizando BCrypt.
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Cadena de filtros de seguridad.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // Desactivar CSRF
-                .authorizeHttpRequests(authz -> authz
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/logout").authenticated()
                         .anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new SecretTokenValidationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
+    /**
+     * Filtro para validar el token secreto enviado desde el gateway.
+     */
     public static class SecretTokenValidationFilter extends OncePerRequestFilter {
-
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
                 throws ServletException, IOException {
 
             String token = request.getHeader(SECRET_HEADER_NAME);
-            System.out.println("Received Secret Token: " + token); // Debugging
 
             if (SECRET_TOKEN.equals(token)) {
-                System.out.println("Secret token is valid, proceeding with request.");
-
-                // Configura el contexto de seguridad si el token es válido
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        "user", // Principal
-                        null, // Credentials
-                        Collections.emptyList() // Authorities
+                        "user", null, Collections.emptyList()
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 filterChain.doFilter(request, response);
             } else {
-                System.out.println("Secret token is invalid, denying request.");
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             }
         }

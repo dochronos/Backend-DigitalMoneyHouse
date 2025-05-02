@@ -210,4 +210,3 @@ public class ExceptionHandlerGlobal {
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
