@@ -1,6 +1,6 @@
 package com.example.auth_server.controller;
 
-import com.example.auth_server.DTOs.*;
+import com.example.auth_server.dto.*;
 import com.example.auth_server.exceptions.BadRequestException;
 import com.example.auth_server.exceptions.ResourceNotFoundException;
 import com.example.auth_server.services.AuthService;

@@ -1,7 +1,7 @@
 package com.example.auth_server.services;
 
-import com.example.auth_server.DTOs.TokenResponseDTO;
-import com.example.auth_server.DTOs.UserLoginDTO;
+import com.example.auth_server.dto.TokenResponseDTO;
+import com.example.auth_server.dto.UserLoginDTO;
 import com.example.auth_server.entities.User;
 import com.example.auth_server.exceptions.BadRequestException;
 import com.example.auth_server.exceptions.ResourceNotFoundException;

@@ -1,5 +1,4 @@
-package com.example.auth_server.DTOs;
-
+package com.example.auth_server.dto;
 
 import com.example.auth_server.entities.User;
 import lombok.AllArgsConstructor;
@@ -26,5 +25,3 @@ public class UserRegisteredDTO {
         this.phone = user.getPhone();
     }
 }
-
-
