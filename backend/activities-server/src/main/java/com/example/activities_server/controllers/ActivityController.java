@@ -1,6 +1,5 @@
 package com.example.activities_server.controllers;
 
-import com.example.activities_server.dto.AccountSummaryDTO;
 import com.example.activities_server.dto.ActivityDTO;
 import com.example.activities_server.dto.LoadMoneyRequest;
 import com.example.activities_server.dto.TransferRequest;
@@ -26,16 +25,15 @@ public class ActivityController {
     public ResponseEntity<List<ActivityDTO>> getLatestActivitiesByUserId(@PathVariable Long userId) {
         try {
             List<ActivityDTO> activities = activityService.getLatestActivitiesByUserId(userId);
-            return new ResponseEntity<>(activities, HttpStatus.OK);
+            return ResponseEntity.ok(activities);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping("/{userId}/activty")
+    @GetMapping("/{userId}/activity")
     public ResponseEntity<List<ActivityDTO>> getAllActivitiesByUserId(@PathVariable Long userId) {
         try {
-            System.out.println("hola");
             List<ActivityDTO> activities = activityService.getAllActivitiesByUserId(userId);
             return ResponseEntity.ok(activities);
         } catch (IllegalArgumentException e) {
@@ -64,12 +62,10 @@ public class ActivityController {
         try {
             ActivityDTO activity = activityService.loadMoneyByCard(userId, loadMoneyRequest);
             return new ResponseEntity<>(activity, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException | ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -78,13 +74,10 @@ public class ActivityController {
         try {
             ActivityDTO activity = activityService.makeTransfer(userId, transferRequest);
             return new ResponseEntity<>(activity, HttpStatus.CREATED);
-        } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.GONE);
+        } catch (ResourceNotFoundException | IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }
