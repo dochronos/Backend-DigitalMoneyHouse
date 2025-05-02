@@ -5,48 +5,44 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatusCode;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class APIErrorEntity {
     private String handledBy;
     private String exception;
-    private HttpStatusCode oriStatus;
     private HttpStatusCode status;
     private String uri;
     private String localizedMessage;
     private List<String> messages;
 
     public APIErrorEntity(
-            String handledBy,
-            String exception,
-            HttpStatusCode oriStatus,
-            HttpStatusCode status,
-            String uri,
-            String localizedMessage,
-            List<String> messages
+            final String handledBy,
+            final String exception,
+            final HttpStatusCode status,
+            final String uri,
+            final String localizedMessage,
+            final List<String> messages
     ) {
-        super();
         this.handledBy = handledBy;
         this.exception = exception;
-        this.oriStatus = oriStatus;
         this.status = status;
         this.uri = uri;
         this.localizedMessage = localizedMessage;
-        this.messages = messages;
+        this.messages = messages != null ? messages : Collections.emptyList();
     }
 
     public APIErrorEntity(
-            String handledBy,
-            String exception,
-            HttpStatusCode oriStatus,
-            HttpStatusCode status,
-            String uri,
-            String localizedMessage,
-            String message
+            final String handledBy,
+            final String exception,
+            final HttpStatusCode status,
+            final String uri,
+            final String localizedMessage,
+            final String message
     ) {
-        this(handledBy, exception, oriStatus, status, uri, localizedMessage, Arrays.asList(message));
+        this(handledBy, exception, status, uri, localizedMessage, List.of(message));
     }
-
 }
