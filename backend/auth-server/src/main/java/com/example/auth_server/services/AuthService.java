@@ -22,7 +22,9 @@ public class AuthService {
     private final RedisTemplate<String, String> redisTemplate;
 
     public AuthService(UserRepository userRepository,
-                       BCryptPasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, RedisTemplate<String, String> redisTemplate) {
+                       BCryptPasswordEncoder passwordEncoder,
+                       JwtTokenProvider jwtTokenProvider,
+                       RedisTemplate<String, String> redisTemplate) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -35,27 +37,27 @@ public class AuthService {
 
     public TokenResponseDTO loginUser(UserLoginDTO loginRequestDTO) {
         try {
-            User user = this.findByEmail(loginRequestDTO.getEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + loginRequestDTO.getEmail()));
-
+            User user = findByEmail(loginRequestDTO.getEmail())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("User not found with email: " + loginRequestDTO.getEmail()));
 
             if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())) {
                 throw new BadRequestException("Incorrect password");
             }
 
             String accessToken = jwtTokenProvider.generateAccessToken(user);
-
             return new TokenResponseDTO(accessToken);
+
         } catch (BadRequestException | ResourceNotFoundException e) {
-            throw e;
+            throw e; // Repropaga las excepciones conocidas
         } catch (Exception e) {
-            throw new RuntimeException("Error during login: " + e.getMessage());
+            throw new RuntimeException("Error during login: " + e.getMessage(), e);
         }
     }
 
     public void logoutUser(String token) {
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7); // Remover el prefijo "Bearer "
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7); // Remover prefijo "Bearer "
         }
 
         if (!jwtTokenProvider.isTokenExpired(token)) {
@@ -63,5 +65,4 @@ public class AuthService {
             redisTemplate.opsForValue().set(token, "invalidated", Duration.ofSeconds(expirationInSeconds));
         }
     }
-
 }

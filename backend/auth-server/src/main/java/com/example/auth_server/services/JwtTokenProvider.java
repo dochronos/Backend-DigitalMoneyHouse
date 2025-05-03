@@ -7,11 +7,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class JwtTokenProvider {
@@ -21,35 +18,31 @@ public class JwtTokenProvider {
 
     @Value("${jwt.token-validity}")
     private long accessValidityInMilliseconds;
-    private final Set<String> invalidatedTokens = new HashSet<>();
 
-    // Genera el access token
+    /**
+     * Genera un token JWT de acceso para el usuario especificado.
+     *
+     * @param user el usuario autenticado
+     * @return el token JWT generado
+     */
     public String generateAccessToken(User user) {
-        LocalDateTime issuedAt = LocalDateTime.now(ZoneOffset.UTC);
-        LocalDateTime expiresAt = issuedAt.plusSeconds(accessValidityInMilliseconds / 1000);
-        String userId = user.getId().toString();
+        Instant now = Instant.now();
+        Instant expiry = now.plusMillis(accessValidityInMilliseconds);
 
-        String token = Jwts.builder()
-                .setSubject(userId)
+        return Jwts.builder()
+                .setSubject(user.getId().toString())
                 .claim("email", user.getEmail())
-                .setIssuedAt(Date.from(issuedAt.toInstant(ZoneOffset.UTC)))
-                .setExpiration(Date.from(expiresAt.toInstant(ZoneOffset.UTC)))
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(expiry))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-
-
-        return token;
-    }
-
-    public void invalidateToken(String token) {
-        invalidatedTokens.add(token);
     }
 
     /**
-     * Extrae los claims del token JWT.
+     * Obtiene los claims contenidos en el token.
      *
-     * @param token El token JWT del cual se extraen los claims.
-     * @return Los claims del token.
+     * @param token JWT válido
+     * @return claims extraídos
      */
     public Claims getClaims(String token) {
         return Jwts.parser()
@@ -58,13 +51,24 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
+    /**
+     * Verifica si el token ha expirado.
+     *
+     * @param token JWT
+     * @return true si el token está expirado, false en caso contrario
+     */
     public boolean isTokenExpired(String token) {
         return getClaims(token).getExpiration().before(new Date());
     }
 
+    /**
+     * Retorna la duración restante de validez del token en segundos.
+     *
+     * @param token JWT
+     * @return duración en segundos
+     */
     public long getExpirationDuration(String token) {
-        Claims claims = getClaims(token);
-        Date expirationDate = claims.getExpiration();
+        Date expirationDate = getClaims(token).getExpiration();
         return (expirationDate.getTime() - System.currentTimeMillis()) / 1000;
     }
 }
