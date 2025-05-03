@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRegisteredDTO {
+
     private Long id;
     private String firstName;
     private String lastName;
@@ -16,12 +17,14 @@ public class UserRegisteredDTO {
     private String email;
     private String phone;
 
-    public UserRegisteredDTO(User user) {
-        this.id = user.getId();
-        this.firstName = user.getFirstName();
-        this.lastName = user.getLastName();
-        this.dni = user.getDni();
-        this.email = user.getEmail();
-        this.phone = user.getPhone();
+    public static UserRegisteredDTO fromEntity(User user) {
+        return new UserRegisteredDTO(
+            user.getId(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getDni(),
+            user.getEmail(),
+            user.getPhone()
+        );
     }
 }
