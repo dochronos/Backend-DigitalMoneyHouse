@@ -34,13 +34,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authz -> authz
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new SecretTokenValidationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .build();
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authz -> authz
+                .anyRequest().authenticated())
+            .sessionManagement(sess -> sess
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(secretTokenValidationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public SecretTokenValidationFilter secretTokenValidationFilter() {
+        return new SecretTokenValidationFilter();
     }
 
     public static class SecretTokenValidationFilter extends OncePerRequestFilter {
@@ -50,23 +57,15 @@ public class SecurityConfig {
                 throws ServletException, IOException {
 
             String token = request.getHeader(SECRET_HEADER_NAME);
-            System.out.println("Received Secret Token: " + token);
 
             if (SECRET_TOKEN.equals(token)) {
-                System.out.println("Secret token is valid, proceeding with request.");
-
-                // Configura el contexto de seguridad si el token es válido
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        "user", // Principal
-                        null, // Credentials
-                        Collections.emptyList() // Authorities
+                        "gateway", null, Collections.emptyList()
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 filterChain.doFilter(request, response);
             } else {
-                System.out.println("Secret token is invalid, denying request.");
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid secret token");
             }
         }
     }
