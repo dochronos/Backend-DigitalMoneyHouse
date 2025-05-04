@@ -13,15 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "cards")
 public class Card {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "expiration", nullable = false)
     @NotNull
-    private  String expiration;
+    private String expiration;
 
     @Column(name = "number", nullable = false, unique = true)
+    @NotBlank
     private String number;
 
     @Column(name = "name", nullable = false)
@@ -33,6 +35,7 @@ public class Card {
     private String cvc;
 
     @Column(name = "user_id", nullable = false)
+    @NotNull
     private Long userId;
 
     public Card(CardCreateDTO cardCreateDTO) {
@@ -42,5 +45,4 @@ public class Card {
         this.cvc = cardCreateDTO.getCvc();
         this.userId = cardCreateDTO.getUserId();
     }
-
 }
