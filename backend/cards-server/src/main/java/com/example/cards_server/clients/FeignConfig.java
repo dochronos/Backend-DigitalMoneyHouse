@@ -1,7 +1,6 @@
 package com.example.cards_server.clients;
 
 import feign.RequestInterceptor;
-import feign.RequestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,11 +11,6 @@ public class FeignConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return new RequestInterceptor() {
-            @Override
-            public void apply(RequestTemplate template) {
-                template.header("X-Secret-Token", SECRET_TOKEN);
-            }
-        };
+        return template -> template.header("X-Secret-Token", SECRET_TOKEN);
     }
 }
