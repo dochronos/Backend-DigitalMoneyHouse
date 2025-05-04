@@ -18,6 +18,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     Optional<Card> findByNumberEndingWith(String cardNumberSuffix);
 
-
     boolean existsByIdAndUserId(Long cardId, Long userId);
 }
