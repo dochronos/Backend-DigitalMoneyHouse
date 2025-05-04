@@ -1,6 +1,7 @@
 package com.example.cards_server.entities;
 
-import com.example.cards_server.DTOs.CardCreateDTO;
+import com.example.cards_server.dto.CardCreateDTO;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

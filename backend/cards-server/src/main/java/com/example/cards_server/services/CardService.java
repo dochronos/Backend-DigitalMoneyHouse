@@ -1,9 +1,9 @@
 package com.example.cards_server.services;
 
 
-import com.example.cards_server.DTOs.CardCreateDTO;
-import com.example.cards_server.DTOs.CardDTO;
 import com.example.cards_server.clients.UserClient;
+import com.example.cards_server.dto.CardCreateDTO;
+import com.example.cards_server.dto.CardDTO;
 import com.example.cards_server.entities.Card;
 import com.example.cards_server.exceptions.CardAlreadyExistsException;
 import com.example.cards_server.exceptions.ResourceNotFoundException;

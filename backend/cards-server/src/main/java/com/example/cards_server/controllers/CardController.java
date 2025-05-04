@@ -1,7 +1,7 @@
 package com.example.cards_server.controllers;
 
-import com.example.cards_server.DTOs.CardCreateDTO;
-import com.example.cards_server.DTOs.CardDTO;
+import com.example.cards_server.dto.CardCreateDTO;
+import com.example.cards_server.dto.CardDTO;
 import com.example.cards_server.exceptions.CardAlreadyExistsException;
 import com.example.cards_server.exceptions.ResourceNotFoundException;
 import com.example.cards_server.services.CardService;

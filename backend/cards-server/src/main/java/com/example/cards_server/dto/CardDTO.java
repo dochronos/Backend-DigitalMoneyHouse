@@ -1,4 +1,4 @@
-package com.example.cards_server.DTOs;
+package com.example.cards_server.dto;
 
 
 import com.example.cards_server.entities.Card;
