@@ -1,4 +1,4 @@
-# Dockerfile for Users Server
+# Dockerfile for Config Server
 FROM openjdk:17-jdk-slim
 VOLUME /tmp
 COPY target/config-server-*.jar app.jar
