@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/accounts/{userId}/cards")
 public class CardController {
 
     private final CardService cardService;
@@ -21,64 +21,61 @@ public class CardController {
         this.cardService = cardService;
     }
 
-    @GetMapping("/accounts/{userId}/cards/{cardId}")
-    public ResponseEntity<CardDTO> getCardById(@PathVariable Long userId, @PathVariable Long cardId) {
-        try {
-            CardDTO card = cardService.getCardById(userId, cardId);
-            return new ResponseEntity<>(card, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/accounts/{userId}/cards")
+    @GetMapping
     public ResponseEntity<List<CardDTO>> getCardsByUserId(@PathVariable Long userId) {
         try {
             List<CardDTO> cards = cardService.getCardsByUserId(userId);
-            if (cards.isEmpty()) {
-                return new ResponseEntity<>(cards, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(cards, HttpStatus.OK);
+            return ResponseEntity.ok(cards);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
-    @PostMapping("/accounts/{userId}/cards")
+    @GetMapping("/{cardId}")
+    public ResponseEntity<CardDTO> getCardById(@PathVariable Long userId, @PathVariable Long cardId) {
+        try {
+            CardDTO card = cardService.getCardById(userId, cardId);
+            return ResponseEntity.ok(card);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/by-number/{cardNumber}")
+    public ResponseEntity<CardDTO> getCardByLastFourNumbers(@PathVariable Long userId, @PathVariable String cardNumber) {
+        try {
+            CardDTO card = cardService.getCardByNumber(userId, cardNumber);
+            return ResponseEntity.ok(card);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping
     public ResponseEntity<CardDTO> createCardForUser(@PathVariable Long userId, @RequestBody CardCreateDTO cardCreateDTO) {
         try {
             CardDTO createdCard = cardService.createCardForUser(userId, cardCreateDTO);
             return new ResponseEntity<>(createdCard, HttpStatus.CREATED);
         } catch (CardAlreadyExistsException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().build();
         }
     }
 
-    @DeleteMapping("/accounts/{userId}/cards/{cardId}")
+    @DeleteMapping("/{cardId}")
     public ResponseEntity<Void> deleteCard(@PathVariable Long userId, @PathVariable Long cardId) {
         try {
             cardService.deleteCardForUser(userId, cardId);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/accounts/{userId}/cards/by-number/{cardNumber}")
-    public ResponseEntity<CardDTO> getCardByLastFourNumbers(
-            @PathVariable Long userId,
-            @PathVariable String cardNumber) {
-        try {
-            CardDTO card = cardService.getCardByNumber(userId, cardNumber);
-            return new ResponseEntity<>(card, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
