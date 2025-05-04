@@ -1,12 +1,13 @@
 package com.example.cards_server.dto;
 
-
 import com.example.cards_server.entities.Card;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CardDTO {
     private Long id;
     private String expiration;
@@ -14,7 +15,6 @@ public class CardDTO {
     private String name;
     private Long userId;
 
-    // Constructor
     public CardDTO(Card card) {
         this.id = card.getId();
         this.expiration = card.getExpiration();

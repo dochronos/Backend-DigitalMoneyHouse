@@ -1,25 +1,19 @@
 package com.example.cards_server.dto;
 
 import com.example.cards_server.entities.Card;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CardCreateDTO {
     private String expiration;
     private String number;
     private String name;
     private String cvc;
     private Long userId;
-
-    public CardCreateDTO(String expiration, String number, String name, String cvc, Long userId) {
-        this.expiration = expiration;
-        this.number = number;
-        this.name = name;
-        this.cvc = cvc;
-        this.userId = userId;
-    }
 
     public CardCreateDTO(Card card) {
         this.expiration = card.getExpiration();
