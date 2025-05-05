@@ -1,7 +1,8 @@
 package com.example.users_server.entities;
 
-import com.example.users_server.DTOs.UserDTO;
-import com.example.users_server.DTOs.UserRegistrationDTO;
+import com.example.users_server.dto.UserDTO;
+import com.example.users_server.dto.UserRegistrationDTO;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

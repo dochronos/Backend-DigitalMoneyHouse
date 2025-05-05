@@ -1,7 +1,7 @@
 package com.example.users_server.services;
 
-import com.example.users_server.DTOs.*;
 import com.example.users_server.clients.AccountServiceClient;
+import com.example.users_server.dto.*;
 import com.example.users_server.entities.User;
 import com.example.users_server.exceptions.BadRequestException;
 import com.example.users_server.exceptions.ResourceNotFoundException;

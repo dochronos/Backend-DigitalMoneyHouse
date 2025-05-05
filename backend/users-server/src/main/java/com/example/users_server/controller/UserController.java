@@ -1,8 +1,8 @@
 package com.example.users_server.controller;
 
-import com.example.users_server.DTOs.UserDTO;
-import com.example.users_server.DTOs.UserRegisteredDTO;
-import com.example.users_server.DTOs.UserRegistrationDTO;
+import com.example.users_server.dto.UserDTO;
+import com.example.users_server.dto.UserRegisteredDTO;
+import com.example.users_server.dto.UserRegistrationDTO;
 import com.example.users_server.exceptions.BadRequestException;
 import com.example.users_server.exceptions.ResourceNotFoundException;
 import com.example.users_server.services.UserService;
