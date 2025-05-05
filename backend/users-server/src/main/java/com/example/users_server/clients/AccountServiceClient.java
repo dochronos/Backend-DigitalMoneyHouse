@@ -1,14 +1,16 @@
 package com.example.users_server.clients;
 
-
+import com.example.users_server.dto.AccountCreatedDTO;
+import com.example.users_server.dto.AccountToCreateDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.example.users_server.dto.AccountCreatedDTO;
-import com.example.users_server.dto.AccountToCreateDTO;
-
-@FeignClient(name = "accounts-server", url = "http://localhost:8085/api")
+@FeignClient(
+    name = "accounts-server",
+    url = "${services.accounts-server.url}", // Se externaliza la URL
+    path = "/api"
+)
 public interface AccountServiceClient {
 
     @PostMapping("/create-account")
