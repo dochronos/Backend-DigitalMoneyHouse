@@ -1,4 +1,3 @@
-
 package com.example.gateway;
 
 import org.springframework.boot.SpringApplication;
