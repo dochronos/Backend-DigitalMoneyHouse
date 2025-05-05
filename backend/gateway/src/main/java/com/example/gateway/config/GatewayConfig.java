@@ -2,6 +2,7 @@ package com.example.gateway.config;
 
 import com.example.gateway.security.AuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +16,10 @@ import org.springframework.web.server.WebFilterChain;
 public class GatewayConfig {
 
     @Autowired
-    AuthenticationFilter filter;
+    private AuthenticationFilter filter;
 
-    private static final String SECRET_TOKEN = "from-gateway"; // Define your secret token here
+    @Value("${gateway.secret-token}")
+    private String secretToken;
 
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
@@ -26,50 +28,50 @@ public class GatewayConfig {
                 .route("auth-server-logout", r -> r.path("/auth-server/api/logout")
                         .filters(f -> f
                                 .filter(filter)
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/auth-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8081"))
                 .route("auth-server-login", r -> r.path("/auth-server/api/login")
                         .filters(f -> f
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/auth-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8081"))
                 // Ruta para el users-server
                 .route("users-server-register", r -> r.path("/users-server/api/register")
                         .filters(f -> f
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/users-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8083"))
                 .route("users-server", r -> r.path("/users-server/api/user/{id}")
                         .filters(f -> f
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/users-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8083"))
                 .route("users-server", r -> r.path("/users-server/api/**")
                         .filters(f -> f
                                 .filter(filter)
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/users-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8083"))
                 // Ruta para el accounts-server
                 .route("accounts-server", r -> r.path("/accounts-server/api/**")
                         .filters(f -> f
                                 .filter(filter)
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/accounts-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8085"))
                 // Ruta para el cards-server
                 .route("cards-server", r -> r.path("/cards-server/api/**")
                         .filters(f -> f
                                 .filter(filter)
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/cards-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8087"))
                 // Ruta para el activities-server
                 .route("activities-server", r -> r.path("/activities-server/api/**")
                         .filters(f -> f
                                 .filter(filter)
-                                .addRequestHeader("X-Secret-Token", SECRET_TOKEN)
+                                .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/activities-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8086"))
                 .build();
@@ -82,7 +84,7 @@ public class GatewayConfig {
                 exchange.getResponse().getHeaders().add("Access-Control-Allow-Origin", "*");
                 exchange.getResponse().getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
                 exchange.getResponse().getHeaders().add("Access-Control-Allow-Headers", "Authorization, Content-Type");
-                if (exchange.getRequest().getMethod().name().equals("OPTIONS")) {
+                if ("OPTIONS".equals(exchange.getRequest().getMethodValue())) {
                     exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.OK);
                     return exchange.getResponse().setComplete();
                 }
