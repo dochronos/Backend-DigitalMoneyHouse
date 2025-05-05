@@ -6,11 +6,13 @@ import com.example.users_server.entities.User;
 import com.example.users_server.exceptions.BadRequestException;
 import com.example.users_server.exceptions.ResourceNotFoundException;
 import com.example.users_server.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -26,24 +28,17 @@ public class UserService {
     }
 
     public UserRegisteredDTO registerUser(UserRegistrationDTO userRegistrationDTO) {
-        try {
-            // Verificar si el correo ya está registrado
-            if (userRepository.findByEmail(userRegistrationDTO.getEmail()).isPresent()) {
-                throw new BadRequestException("Email already registered");
-            }
-
-            // Crear el objeto User usando el constructor
-            User user = new User(userRegistrationDTO, passwordEncoder.encode(userRegistrationDTO.getPassword()));
-            User savedUser = userRepository.save(user);
-
-            // Crear la cuenta para el usuario a través de Feign
-            AccountToCreateDTO accountToCreateDTO = new AccountToCreateDTO(savedUser.getId(), savedUser.getFirstName(), savedUser.getLastName());
-            AccountCreatedDTO accountCreatedDTO = accountServiceClient.createAccount(accountToCreateDTO);
-
-            return new UserRegisteredDTO(savedUser, accountCreatedDTO);
-        } catch (Exception e) {
-            throw new RuntimeException("Error registering user: " + e.getMessage());
+        if (userRepository.findByEmail(userRegistrationDTO.getEmail()).isPresent()) {
+            throw new BadRequestException("Email already registered");
         }
+
+        User user = new User(userRegistrationDTO, passwordEncoder.encode(userRegistrationDTO.getPassword()));
+        User savedUser = userRepository.save(user);
+
+        AccountToCreateDTO accountToCreateDTO = new AccountToCreateDTO(savedUser.getId(), savedUser.getFirstName(), savedUser.getLastName());
+        AccountCreatedDTO accountCreatedDTO = accountServiceClient.createAccount(accountToCreateDTO);
+
+        return new UserRegisteredDTO(savedUser, accountCreatedDTO);
     }
 
     public UserDTO getUserById(Long userId) {
@@ -55,7 +50,6 @@ public class UserService {
     public boolean userExists(Long userId) {
         return userRepository.existsById(userId);
     }
-
 
     public UserDTO updateUser(Long userId, UserDTO userDTO) {
         User user = userRepository.findById(userId)
@@ -69,6 +63,4 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
-
 }
