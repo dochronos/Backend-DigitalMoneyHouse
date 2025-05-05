@@ -4,7 +4,6 @@ import com.example.users_server.dto.UserDTO;
 import com.example.users_server.dto.UserRegisteredDTO;
 import com.example.users_server.dto.UserRegistrationDTO;
 import com.example.users_server.exceptions.BadRequestException;
-import com.example.users_server.exceptions.ResourceNotFoundException;
 import com.example.users_server.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,47 +22,28 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserRegisteredDTO> registerUser(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
-        // Verificar si el correo ya está registrado
-        userService.findByEmail(userRegistrationDTO.getEmail())
-                .ifPresent(user -> {
-                    throw new BadRequestException("Email already registered");
-                });
+        userService.findByEmail(userRegistrationDTO.getEmail()).ifPresent(user -> {
+            throw new BadRequestException("Email already registered");
+        });
 
-        // Registrar el nuevo usuario
         UserRegisteredDTO registeredUser = userService.registerUser(userRegistrationDTO);
-
-
         return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        try {
-            UserDTO userDTO = userService.getUserById(id);
-            return new ResponseEntity<>(userDTO, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        UserDTO userDTO = userService.getUserById(id);
+        return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/users/exists/{id}")
-    public Boolean userExists(@PathVariable Long id) {
-        System.out.println("llego");
-        return userService.userExists(id);
+    public ResponseEntity<Boolean> userExists(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.userExists(id));
     }
-
 
     @PatchMapping("/user/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
-        try {
-            UserDTO updatedUser = userService.updateUser(id, userDTO);
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        UserDTO updatedUser = userService.updateUser(id, userDTO);
+        return ResponseEntity.ok(updatedUser);
     }
 }
