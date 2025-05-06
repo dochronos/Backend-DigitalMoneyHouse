@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.digitalmoney</groupId>
+    <artifactId>DMH-Backend</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>Digital Money House Backend</name>
+    <description>Proyecto padre que contiene todos los microservicios del backend de Digital Money House</description>
+
+    <modules>
+        <module>services/account-service</module>
+        <module>services/activities-server</module>
+        <module>services/auth-server</module>
+        <module>services/cards-server</module>
+        <module>services/config-server</module>
+        <module>services/transaction-server</module>
+        <module>services/users_server</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring.boot.version>3.2.4</spring.boot.version>
+    </properties>
+
+</project>

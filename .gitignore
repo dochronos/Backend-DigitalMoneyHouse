@@ -1,4 +1,3 @@
-
 # Java / Spring Boot
 target/
 *.class
@@ -10,6 +9,11 @@ target/
 *.h2.db
 *.sqlite
 *.DS_Store
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
 
 # IDEs
 .idea/
