@@ -13,18 +13,65 @@
     <description>Proyecto padre que contiene todos los microservicios del backend de Digital Money House</description>
 
     <modules>
-        <module>services/account-service</module>
-        <module>services/activities-server</module>
-        <module>services/auth-server</module>
-        <module>services/cards-server</module>
-        <module>services/config-server</module>
-        <module>services/transaction-server</module>
-        <module>services/users_server</module>
+        <module>backend/accounts-server</module>
+        <module>backend/activities-server</module>
+        <module>backend/auth-server</module>
+        <module>backend/cards-server</module>
+        <module>backend/config-server</module>
+        <module>backend/eureka-server</module>
+        <module>backend/gateway</module>
+        <module>backend/users-server</module>
     </modules>
 
     <properties>
         <java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <spring.boot.version>3.2.4</spring.boot.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Boot BOM -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud BOM -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Maven Compiler Plugin -->
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <release>${java.version}</release>
+                    </configuration>
+                </plugin>
+
+                <!-- Spring Boot Maven Plugin -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

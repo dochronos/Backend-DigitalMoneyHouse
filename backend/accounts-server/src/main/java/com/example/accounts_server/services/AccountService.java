@@ -1,12 +1,13 @@
-package com.digitalmoney.accountservice.service;
+package com.example.accounts_server.services;
 
-import com.digitalmoney.accountservice.dto.AccountDTO;
-import com.digitalmoney.accountservice.dto.UpdateDTO;
-import com.digitalmoney.accountservice.dto.UserDTO;
-import com.digitalmoney.accountservice.entity.Account;
-import com.digitalmoney.accountservice.exceptions.ResourceNotFoundException;
-import com.digitalmoney.accountservice.repositories.AccountRepository;
-import com.digitalmoney.accountservice.utils.AccountUtils;
+import com.example.accounts_server.dto.AccountDTO;
+import com.example.accounts_server.dto.UpdateDTO;
+import com.example.accounts_server.dto.UserDTO;
+import com.example.accounts_server.entities.Account;
+import com.example.accounts_server.exceptions.ResourceNotFoundException;
+import com.example.accounts_server.entities.AccountRepository;
+import com.example.accounts_server.utils.AccountUtils;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

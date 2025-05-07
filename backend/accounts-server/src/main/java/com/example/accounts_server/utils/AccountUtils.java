@@ -1,4 +1,4 @@
-package com.digitalmoney.accountservice.utils;
+package com.example.accounts_server.utils;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;

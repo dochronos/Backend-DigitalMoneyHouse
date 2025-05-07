@@ -1,6 +1,6 @@
-package com.digitalmoney.accountservice.repositories;
+package com.example.accounts_server.entities;
 
-import com.digitalmoney.accountservice.entity.Account;
+import com.example.accounts_server.entities.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

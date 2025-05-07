@@ -1,4 +1,4 @@
-package com.example.accounts_server.dto;;
+package com.example.accounts_server.dto;
 
 import com.example.accounts_server.entities.Account;
 import lombok.Data;
