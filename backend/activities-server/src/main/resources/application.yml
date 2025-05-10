@@ -14,10 +14,7 @@ spring:
       ddl-auto: update
   mvc:
     pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
-
-security:
-  secret-token: from-gateway
+      matching-strategy: ant_path_matcher
 
 eureka:
   client:

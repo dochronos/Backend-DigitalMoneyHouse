@@ -1,4 +1,4 @@
-package com.example.accounts_server;
+package com.digitalmoney.accountservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

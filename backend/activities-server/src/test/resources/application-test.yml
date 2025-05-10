@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: activities-server
+  datasource:
+    url: jdbc:sqlite:memory:activities-test.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  config:
+    import: optional:classpath:application.yml
+
+  cloud:
+    config:
+      enabled: false
+
+security:
+  secret-token: test-secret
+
+eureka:
+  client:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

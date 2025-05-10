@@ -1,8 +1,7 @@
-package com.example.accounts_server.dto;;
+package com.example.accounts_server.dto;
 
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class UserDTO {

@@ -4,11 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +26,6 @@ public class ExceptionHandlerGlobal {
 
     private static final String EXCEPTION_HANDLED_BY = "(Rest)ResponseEntityExceptionHandler (@ControllerAdvice)";
 
-    // Manejo de MethodArgumentNotValidException
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, WebRequest request) {
         List<String> errors = new ArrayList<>();
@@ -35,26 +33,25 @@ public class ExceptionHandlerGlobal {
                 errors.add(error.getField() + ": " + error.getDefaultMessage()));
         e.getBindingResult().getGlobalErrors().forEach(error ->
                 errors.add(error.getObjectName() + ": " + error.getDefaultMessage()));
-
-        return buildApiError(e, HttpStatus.BAD_REQUEST, request, "MethodArgumentNotValidException (overriden)", errors);
+        return buildApiError(e, HttpStatus.BAD_REQUEST, request, "MethodArgumentNotValidException (overridden)", errors);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException e, WebRequest request) {
         String error = e.getParameterName() + " parameter is missing";
-        return buildApiError(e, HttpStatus.BAD_REQUEST, request, "MissingServletRequestParameterException (overriden)", error);
+        return buildApiError(e, HttpStatus.BAD_REQUEST, request, "MissingServletRequestParameterException (overridden)", error);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e, WebRequest request) {
         String error = "Request body inexistente o mal formado";
-        return buildApiError(e, HttpStatus.BAD_REQUEST, request, "HttpMessageNotReadableException (overriden)", error);
+        return buildApiError(e, HttpStatus.BAD_REQUEST, request, "HttpMessageNotReadableException (overridden)", error);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Object> handleNoHandlerFound(NoHandlerFoundException e, WebRequest request) {
         String error = "No handler found for " + e.getHttpMethod() + " " + e.getRequestURL();
-        return buildApiError(e, HttpStatus.NOT_FOUND, request, "NoHandlerFoundException (overriden)", error);
+        return buildApiError(e, HttpStatus.NOT_FOUND, request, "NoHandlerFoundException (overridden)", error);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -79,7 +76,8 @@ public class ExceptionHandlerGlobal {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, WebRequest request) {
-        String error = e.getName() + " should be of type " + (e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "unknown");
+        String error = e.getName() + " should be of type " +
+                (e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "unknown");
         return buildApiError(e, HttpStatus.BAD_REQUEST, request, "MethodArgumentTypeMismatchException (@ExceptionHandler)", error);
     }
 
@@ -92,15 +90,27 @@ public class ExceptionHandlerGlobal {
         String path = ((ServletWebRequest) request).getRequest().getRequestURI();
         log.error("[{}] {} at {} | Details: {}", exceptionType, e.getMessage(), path, errorDetails);
 
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                exceptionType,
-                null,
-                status,
-                path,
-                e.getLocalizedMessage(),
-                errorDetails
-        );
+        APIErrorEntity apiError;
+        if (errorDetails instanceof List) {
+            apiError = new APIErrorEntity(
+                    EXCEPTION_HANDLED_BY,
+                    exceptionType,
+                    status,
+                    path,
+                    e.getLocalizedMessage(),
+                    (List<String>) errorDetails
+            );
+        } else {
+            apiError = new APIErrorEntity(
+                    EXCEPTION_HANDLED_BY,
+                    exceptionType,
+                    status,
+                    path,
+                    e.getLocalizedMessage(),
+                    errorDetails.toString()
+            );
+        }
+
         return new ResponseEntity<>(apiError, status);
     }
 }

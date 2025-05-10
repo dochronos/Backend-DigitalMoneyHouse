@@ -5,6 +5,9 @@ spring:
   application:
     name: accounts-server
 
+  config:
+    import: "optional:configserver:"
+
   datasource:
     url: jdbc:sqlite:./data/money-dh.db
     driver-class-name: org.sqlite.JDBC
@@ -23,8 +26,6 @@ spring:
       discovery:
         enabled: true
         service-id: config-server
-  config:
-    import: optional:configserver:
 
 logging:
   level:
