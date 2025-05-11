@@ -46,10 +46,10 @@ public class AuthService {
             }
 
             String accessToken = jwtTokenProvider.generateAccessToken(user);
-            return new TokenResponseDTO(accessToken);
+            return new TokenResponseDTO(accessToken, "Login exitoso");
 
         } catch (BadRequestException | ResourceNotFoundException e) {
-            throw e; // Repropaga las excepciones conocidas
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Error during login: " + e.getMessage(), e);
         }

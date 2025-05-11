@@ -28,8 +28,9 @@ spring:
       discovery:
         enabled: true
         service-id: config-server
+
   config:
-    import: optional:configserver:
+    import: "optional:configserver:"
 
 jwt:
   secret:

@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: cards-server
+
+  datasource:
+    url: jdbc:sqlite:file:memdb?mode=memory&cache=shared
+    driver-class-name: org.sqlite.JDBC
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+
+  config:
+    import: optional:classpath:application.yml
+
+eureka:
+  client:
+    enabled: false
+
+logging:
+  level:
+    root: WARN
