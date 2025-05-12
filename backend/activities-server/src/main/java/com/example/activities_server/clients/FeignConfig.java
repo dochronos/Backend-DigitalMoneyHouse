@@ -1,7 +1,6 @@
 package com.example.activities_server.clients;
 
 import feign.RequestInterceptor;
-import feign.RequestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
