@@ -6,56 +6,33 @@ spring:
     name: gateway
 
   cloud:
-    config:
-      discovery:
-        enabled: true
-        service-id: config-server
     gateway:
-      # Puedes agregar aquí la configuración de rutas, filtros, etc.
+      default-filters:
+        - AddRequestHeader=X-Request-Foo, Bar
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - Authorization
+              - Content-Type
+              - X-Secret-Token
+
   config:
-    import: optional:configserver:
-
-  data:
-    redis:
-      host: localhost
-      port: 6379
-
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-    path: /doc/swagger-ui.html
-
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.cloud.gateway: DEBUG
-    com.example.gateway.security: DEBUG
+    import: "optional:configserver:"
 
 eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
   instance:
-    status-page-url-path: http://localhost:8082/actuator/info
-    health-check-url-path: http://localhost:8082/actuator/health
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  info:
-    env:
-      enabled: true
-
-info:
-  app:
-    name: gateway
-    description: gateway
-
-jwt:
-  secret:
-    key: dGhpcyBpcyBhIHNhbXBsZSBzZWNyZXQgb3B0aW9uYWw=
-  prefix: "Bearer"
+    prefer-ip-address: true
 
 gateway:
-  secret-token: from-gateway
+  secret-token: test-secret

@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: gateway
+
+  config:
+    import: optional:classpath:application.yml
+
+jwt:
+  secret:
+    key: VGVzdFNlY3JldEtleVdpdGhFeGFjdERhdGFTZWN1cml0eQ==  # Base64 de "TestSecretKeyWithExactDataSecurity"
+  prefix: Bearer
+  token-validity: 1800000
+
+eureka:
+  client:
+    enabled: false
+
+logging:
+  level:
+    root: WARN

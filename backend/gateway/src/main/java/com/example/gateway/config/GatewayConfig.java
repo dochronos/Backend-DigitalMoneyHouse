@@ -1,6 +1,5 @@
 package com.example.gateway.config;
 
-import com.example.gateway.security.AuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -11,6 +10,8 @@ import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
+
+import com.example.gateway.security.AuthenticationFilter;
 
 @Configuration
 public class GatewayConfig {
@@ -24,7 +25,6 @@ public class GatewayConfig {
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
-                // Ruta para el auth-server
                 .route("auth-server-logout", r -> r.path("/auth-server/api/logout")
                         .filters(f -> f
                                 .filter(filter)
@@ -36,7 +36,6 @@ public class GatewayConfig {
                                 .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/auth-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8081"))
-                // Ruta para el users-server
                 .route("users-server-register", r -> r.path("/users-server/api/register")
                         .filters(f -> f
                                 .addRequestHeader("X-Secret-Token", secretToken)
@@ -53,21 +52,18 @@ public class GatewayConfig {
                                 .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/users-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8083"))
-                // Ruta para el accounts-server
                 .route("accounts-server", r -> r.path("/accounts-server/api/**")
                         .filters(f -> f
                                 .filter(filter)
                                 .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/accounts-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8085"))
-                // Ruta para el cards-server
                 .route("cards-server", r -> r.path("/cards-server/api/**")
                         .filters(f -> f
                                 .filter(filter)
                                 .addRequestHeader("X-Secret-Token", secretToken)
                                 .rewritePath("/cards-server/(?<segment>.*)", "/${segment}"))
                         .uri("http://localhost:8087"))
-                // Ruta para el activities-server
                 .route("activities-server", r -> r.path("/activities-server/api/**")
                         .filters(f -> f
                                 .filter(filter)
@@ -84,7 +80,7 @@ public class GatewayConfig {
                 exchange.getResponse().getHeaders().add("Access-Control-Allow-Origin", "*");
                 exchange.getResponse().getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
                 exchange.getResponse().getHeaders().add("Access-Control-Allow-Headers", "Authorization, Content-Type");
-                if ("OPTIONS".equals(exchange.getRequest().getMethodValue())) {
+                if ("OPTIONS".equals(exchange.getRequest().getMethod().name())) {
                     exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.OK);
                     return exchange.getResponse().setComplete();
                 }
@@ -92,5 +88,4 @@ public class GatewayConfig {
             return chain.filter(exchange);
         };
     }
-
 }
