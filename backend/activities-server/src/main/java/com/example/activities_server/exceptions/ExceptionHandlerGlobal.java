@@ -76,8 +76,9 @@ public class ExceptionHandlerGlobal {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, WebRequest request) {
+        Class<?> requiredType = e.getRequiredType();
         String error = e.getName() + " should be of type " +
-                (e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "unknown");
+                (requiredType != null ? requiredType.getSimpleName() : "unknown");
         return buildApiError(e, HttpStatus.BAD_REQUEST, request, "MethodArgumentTypeMismatchException (@ExceptionHandler)", error);
     }
 
@@ -87,24 +88,38 @@ public class ExceptionHandlerGlobal {
     }
 
     private ResponseEntity<Object> buildApiError(Exception e, HttpStatus status, WebRequest request, String exceptionType, Object errorDetails) {
-        String path = (request instanceof ServletWebRequest swr && swr.getRequest() != null)
-                ? swr.getRequest().getRequestURI()
-                : "unknown";
+        String path = "unknown";
+        if (request instanceof ServletWebRequest swr && swr.getRequest() != null) {
+            path = swr.getRequest().getRequestURI();
+        }
 
         log.error("[{}] {} at {} | Details: {}", exceptionType, e.getMessage(), path, errorDetails);
 
         APIErrorEntity apiError;
-        if (errorDetails instanceof List) {
-            @SuppressWarnings("unchecked")
-            List<String> errors = (List<String>) errorDetails;
-            apiError = new APIErrorEntity(
-                    EXCEPTION_HANDLED_BY,
-                    exceptionType,
-                    status,
-                    path,
-                    e.getLocalizedMessage(),
-                    errors
-            );
+        if (errorDetails instanceof List<?>) {
+            List<?> rawList = (List<?>) errorDetails;
+            boolean allStrings = rawList.stream().allMatch(item -> item instanceof String);
+            if (allStrings) {
+                @SuppressWarnings("unchecked")
+                List<String> stringList = (List<String>) rawList;
+                apiError = new APIErrorEntity(
+                        EXCEPTION_HANDLED_BY,
+                        exceptionType,
+                        status,
+                        path,
+                        e.getLocalizedMessage(),
+                        stringList
+                );
+            } else {
+                apiError = new APIErrorEntity(
+                        EXCEPTION_HANDLED_BY,
+                        exceptionType,
+                        status,
+                        path,
+                        e.getLocalizedMessage(),
+                        rawList.toString()
+                );
+            }
         } else {
             apiError = new APIErrorEntity(
                     EXCEPTION_HANDLED_BY,

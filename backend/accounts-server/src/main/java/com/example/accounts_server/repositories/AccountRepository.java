@@ -1,8 +1,9 @@
-package com.example.accounts_server.entities;
+package com.example.accounts_server.repositories;
 
-import com.example.accounts_server.entities.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.example.accounts_server.entities.Account;
 
 import java.util.Optional;
 

@@ -10,7 +10,6 @@ import com.example.cards_server.repositories.CardRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +25,7 @@ public class CardService {
 
     public List<CardDTO> getCardsByUserId(Long userId) {
         validateUserExists(userId);
+
         return cardRepository.findAllByUserId(userId).stream()
                 .map(CardDTO::new)
                 .collect(Collectors.toList());
@@ -36,19 +36,22 @@ public class CardService {
 
         Card card = cardRepository.findByIdAndUserId(cardId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Card not found for cardId " + cardId + " and userId " + userId));
+                        "Card not found for cardId " + cardId + " and userId " + userId
+                ));
 
         return new CardDTO(card);
     }
 
     public CardDTO createCardForUser(Long userId, CardCreateDTO cardCreateDTO) {
-        if (cardRepository.findByNumber(cardCreateDTO.getNumber()).isPresent()) {
+        cardRepository.findByNumber(cardCreateDTO.getNumber()).ifPresent(card -> {
             throw new CardAlreadyExistsException(
-                    "Card with number " + cardCreateDTO.getNumber() + " already exists.");
-        }
+                    "Card with number " + cardCreateDTO.getNumber() + " already exists."
+            );
+        });
 
         Card card = new Card(cardCreateDTO);
         card.setUserId(userId);
+
         Card savedCard = cardRepository.save(card);
 
         return new CardDTO(savedCard);
@@ -57,7 +60,8 @@ public class CardService {
     public void deleteCardForUser(Long userId, Long cardId) {
         if (!cardRepository.existsByIdAndUserId(cardId, userId)) {
             throw new ResourceNotFoundException(
-                    "Card not found for cardId " + cardId + " and userId " + userId);
+                    "Card not found for cardId " + cardId + " and userId " + userId
+            );
         }
 
         cardRepository.deleteById(cardId);
@@ -68,7 +72,8 @@ public class CardService {
 
         Card card = cardRepository.findByNumberEndingWith(cardNumberSuffix)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Card not found for number ending with " + cardNumberSuffix + " and userId " + userId));
+                        "Card not found for number ending with " + cardNumberSuffix + " and userId " + userId
+                ));
 
         return new CardDTO(card);
     }

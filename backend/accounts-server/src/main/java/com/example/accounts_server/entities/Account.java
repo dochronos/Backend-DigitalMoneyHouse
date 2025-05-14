@@ -1,6 +1,5 @@
 package com.example.accounts_server.entities;
 
-import com.example.accounts_server.dto.AccountDTO;
 import com.example.accounts_server.dto.UpdateDTO;
 import com.example.accounts_server.dto.UserDTO;
 import jakarta.persistence.*;

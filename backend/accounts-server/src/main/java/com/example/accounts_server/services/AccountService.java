@@ -5,13 +5,12 @@ import com.example.accounts_server.dto.UpdateDTO;
 import com.example.accounts_server.dto.UserDTO;
 import com.example.accounts_server.entities.Account;
 import com.example.accounts_server.exceptions.ResourceNotFoundException;
-import com.example.accounts_server.entities.AccountRepository;
+import com.example.accounts_server.repositories.AccountRepository;
 import com.example.accounts_server.utils.AccountUtils;
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +19,6 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountUtils accountUtils;
 
-    private final Random random = new Random();
 
     public AccountService(AccountRepository accountRepository, AccountUtils accountUtils) {
         this.accountRepository = accountRepository;
