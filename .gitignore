@@ -1,33 +1,31 @@
-# Java / Spring Boot
-target/
+# === Java / Spring Boot ===
 *.class
 *.jar
 *.war
-*.iml
 *.log
+
+# === Bases de datos locales ===
 *.db
 *.h2.db
 *.sqlite
-*.DS_Store
 
-# Maven Wrapper
+# === Maven ===
+/target/
 .mvn/wrapper/maven-wrapper.jar
 mvnw
 mvnw.cmd
 
-# IDEs
+# === IDEs ===
 .idea/
+*.iml
 *.iws
 *.ipr
 *.bak
 
-# Sistema
-Thumbs.db
+# === Archivos del sistema ===
 .DS_Store
+Thumbs.db
 
-# Logs
-*.log
-
-# Node
+# === Node (por si hay frontend o recursos externos) ===
 node_modules/
 dist/

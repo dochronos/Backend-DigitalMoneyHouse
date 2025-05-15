@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Exesilvestre/config-server-DH
+          # clone-on-start: true  # Descomenta si deseas clonar el repositorio al iniciar el servidor
+
+server:
+  port: 8888
+
+eureka:
+  instance:
+    hostname: localhost
