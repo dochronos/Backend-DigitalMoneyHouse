@@ -3,19 +3,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.digitalmoney</groupId>
     <artifactId>DMH-Backend</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
+
     <modules>
-        <module>services/auth-server</module>
-        <module>services/cards-server</module>
-        <module>services/accounts-server</module>
-        <module>services/activities-server</module>
-        <module>services/users-server</module>
-        <module>infrastructure/eureka-server</module>
-        <module>infrastructure/config-server</module>
-        <module>infrastructure/gateway</module>
+        <module>backend/auth-server</module>
+        <module>backend/cards-server</module>
+        <module>backend/accounts-server</module>
+        <module>backend/activities-server</module>
+        <module>backend/users-server</module>
+        <module>backend/eureka-server</module>
+        <module>backend/config-server</module>
+        <module>backend/gateway</module>
     </modules>
 
     <properties>
@@ -24,12 +26,15 @@
         <spring.cloud.version>2023.0.1</spring.cloud.version>
         <jjwt.version>0.11.5</jjwt.version>
         <lombok.version>1.18.32</lombok.version>
-        <hibernate.dialects.version>6.2.7.Final</hibernate.dialects.version>
+        <hibernate.community.version>6.2.7.Final</hibernate.community.version>
         <sqlite.version>3.46.0.1</sqlite.version>
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <spring.boot.maven.plugin.version>3.2.4</spring.boot.maven.plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring BOMs -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -44,6 +49,39 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- Dependencias comunes -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-community-dialects</artifactId>
+                <version>${hibernate.community.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -53,6 +91,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
@@ -61,6 +100,7 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.maven.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

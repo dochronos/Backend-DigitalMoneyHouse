@@ -29,3 +29,6 @@ Thumbs.db
 # === Node (por si hay frontend o recursos externos) ===
 node_modules/
 dist/
+
+# === Scripts locales ===
+/validate-poms.sh

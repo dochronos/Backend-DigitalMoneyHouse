@@ -4,13 +4,14 @@ import com.example.cards_server.dto.CardCreateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
 @Entity
-@NoArgsConstructor
 @Table(name = "cards")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Card {
 
     @Id
@@ -37,16 +38,11 @@ public class Card {
     @NotNull
     private Long userId;
 
-    public Card(CardCreateDTO cardCreateDTO) {
-        this.expiration = cardCreateDTO.getExpiration();
-        this.number = cardCreateDTO.getNumber();
-        this.name = cardCreateDTO.getName();
-        this.cvc = cardCreateDTO.getCvc();
-        this.userId = cardCreateDTO.getUserId();
-    }
-
-    // Agregado explícitamente por compatibilidad
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public Card(CardCreateDTO dto) {
+        this.expiration = dto.getExpiration();
+        this.number = dto.getNumber();
+        this.name = dto.getName();
+        this.cvc = dto.getCvc();
+        this.userId = dto.getUserId();
     }
 }

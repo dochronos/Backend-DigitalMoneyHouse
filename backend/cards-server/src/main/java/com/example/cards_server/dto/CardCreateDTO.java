@@ -6,15 +6,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CardCreateDTO {
+
+    @NotBlank
     private String expiration;
+
+    @NotBlank
     private String number;
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String cvc;
+
+    @NotNull
     private Long userId;
 
     public CardCreateDTO(Card card) {

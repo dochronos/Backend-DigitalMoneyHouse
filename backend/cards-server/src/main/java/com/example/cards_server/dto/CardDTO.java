@@ -2,12 +2,14 @@ package com.example.cards_server.dto;
 
 import com.example.cards_server.entities.Card;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CardDTO {
     private Long id;
     private String expiration;
