@@ -18,13 +18,42 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ControllerAdvice
 public class ExceptionHandlerGlobal {
+
     private static final String EXCEPTION_HANDLED_BY = "(Rest)ResponseEntityExceptionHandler (@ControllerAdvice)";
 
-    // Manejo de MethodArgumentNotValidException
+    private ResponseEntity<Object> buildErrorResponseList(
+            Exception e,
+            String exceptionName,
+            HttpStatus status,
+            String uri,
+            List<String> messages) {
+
+        APIErrorEntity apiError = new APIErrorEntity(
+                EXCEPTION_HANDLED_BY,
+                exceptionName,
+                status,
+                status,
+                uri,
+                e.getLocalizedMessage(),
+                messages
+        );
+        return ResponseEntity.status(status).body(apiError);
+    }
+
+    private ResponseEntity<Object> buildErrorResponseSingle(
+            Exception e,
+            String exceptionName,
+            HttpStatus status,
+            String uri,
+            String message) {
+        return buildErrorResponseList(e, exceptionName, status, uri, List.of(message));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
                                                                HttpHeaders headers,
@@ -36,178 +65,83 @@ public class ExceptionHandlerGlobal {
         e.getBindingResult().getGlobalErrors().forEach(error ->
                 errors.add(error.getObjectName() + ": " + error.getDefaultMessage()));
 
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "MethodArgumentNotValidException (overriden)",
-                status,
-                HttpStatus.BAD_REQUEST,
-                ((ServletWebRequest) request).getRequest().getRequestURI(),
-                e.getLocalizedMessage(),
-                errors
-        );
-
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
+        return buildErrorResponseList(e, "MethodArgumentNotValidException (overriden)", HttpStatus.BAD_REQUEST, uri, errors);
     }
 
-    // Manejo de MissingServletRequestParameterException
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException e,
                                                                        HttpHeaders headers,
                                                                        HttpStatus status,
                                                                        WebRequest request) {
+        String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String error = e.getParameterName() + " parameter is missing";
 
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "MissingServletRequestParameterException (overriden)",
-                status,
-                HttpStatus.BAD_REQUEST,
-                ((ServletWebRequest) request).getRequest().getRequestURI(),
-                e.getLocalizedMessage(),
-                error
-        );
-
-        return new ResponseEntity<>(apiError, headers, apiError.getStatus());
+        return buildErrorResponseSingle(e, "MissingServletRequestParameterException (overriden)", HttpStatus.BAD_REQUEST, uri, error);
     }
 
-    // Manejo de HttpMessageNotReadableException
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
                                                                HttpHeaders headers,
                                                                HttpStatus status,
                                                                WebRequest request) {
-        String error = "Request body inexistente o mal formado";
-
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "HttpMessageNotReadableException (overriden)",
-                status,
-                HttpStatus.BAD_REQUEST,
-                ((ServletWebRequest) request).getRequest().getRequestURI(),
-                e.getLocalizedMessage(),
-                error
-        );
-
-        return new ResponseEntity<>(apiError, headers, apiError.getStatus());
+        String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
+        return buildErrorResponseSingle(e, "HttpMessageNotReadableException (overriden)", HttpStatus.BAD_REQUEST, uri,
+                "Request body inexistente o mal formado");
     }
 
-    // Manejo de NoHandlerFoundException
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Object> handleNoHandlerFound(NoHandlerFoundException e,
                                                        HttpHeaders headers,
                                                        HttpStatus status,
                                                        WebRequest request) {
+        String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String error = "No handler found for " + e.getHttpMethod() + " " + e.getRequestURL();
 
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "NoHandlerFoundException (overriden)",
-                status,
-                HttpStatus.NOT_FOUND,
-                ((ServletWebRequest) request).getRequest().getRequestURI(),
-                e.getLocalizedMessage(),
-                error
-        );
-
-        return new ResponseEntity<>(apiError, headers, apiError.getStatus());
+        return buildErrorResponseSingle(e, "NoHandlerFoundException (overriden)", HttpStatus.NOT_FOUND, uri, error);
     }
 
-    // Manejo de ResourceNotFoundException (custom)
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFound(ResourceNotFoundException e,
                                                          WebRequest request) {
-        String error = e.getMessage();
-
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "(Custom)ResourceNotFoundException (@ExceptionHandler)",
-                null,
-                HttpStatus.NOT_FOUND,
-                ((ServletWebRequest) request).getRequest().getRequestURI(),
-                e.getLocalizedMessage(),
-                error
-        );
-
-        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+        String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
+        return buildErrorResponseSingle(e, "ResourceNotFoundException (custom)", HttpStatus.NOT_FOUND, uri, e.getMessage());
     }
 
-    // Manejo de BadRequestException (custom)
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleBadRequest(BadRequestException e,
                                                    WebRequest request) {
-        String error = e.getMessage();
-
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "(Custom)BadRequestException (@ExceptionHandler)",
-                null,
-                HttpStatus.BAD_REQUEST,
-                ((ServletWebRequest) request).getRequest().getRequestURI(),
-                e.getLocalizedMessage(),
-                error
-        );
-
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
+        return buildErrorResponseSingle(e, "BadRequestException (custom)", HttpStatus.BAD_REQUEST, uri, e.getMessage());
     }
 
-    // Manejo de ConstraintViolationException (validación de bean)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException e,
                                                             HttpServletRequest request) {
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         List<String> errors = new ArrayList<>();
         violations.forEach(violation ->
-                errors.add(violation.getRootBeanClass().getName() + " " +
+                errors.add(violation.getRootBeanClass().getSimpleName() + " " +
                         violation.getPropertyPath() + ": " + violation.getMessage()));
 
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "ConstraintViolationException (@ExceptionHandler)",
-                null,
-                HttpStatus.BAD_REQUEST,
-                request.getRequestURI(),
-                e.getLocalizedMessage(),
-                errors
-        );
-
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return buildErrorResponseList(e, "ConstraintViolationException", HttpStatus.BAD_REQUEST, request.getRequestURI(), errors);
     }
 
-    // Manejo de MethodArgumentTypeMismatchException (conversión de tipo)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e,
                                                                    HttpServletRequest request) {
-        String error = e.getName() + " should be of type " + e.getRequiredType().getName();
+        String requiredType = Optional.ofNullable(e.getRequiredType())
+                                      .map(Class::getSimpleName)
+                                      .orElse("unknown");
 
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "MethodArgumentTypeMismatchException (@ExceptionHandler)",
-                null,
-                HttpStatus.BAD_REQUEST,
-                request.getRequestURI(),
-                e.getLocalizedMessage(),
-                error
-        );
+        String error = e.getName() + " should be of type " + requiredType;
 
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return buildErrorResponseSingle(e, "MethodArgumentTypeMismatchException", HttpStatus.BAD_REQUEST, request.getRequestURI(), error);
     }
 
-    // Manejo de cualquier otra excepción no manejada específicamente
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAll(Exception e, HttpServletRequest request) {
-        String error = "Error occurred";
-
-        APIErrorEntity apiError = new APIErrorEntity(
-                EXCEPTION_HANDLED_BY,
-                "Exception (@ExceptionHandler)",
-                null,
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                request.getRequestURI(),
-                e.getLocalizedMessage(),
-                error
-        );
-
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+        String error = "Unexpected error occurred";
+        return buildErrorResponseSingle(e, "Unhandled Exception", HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI(), error);
     }
 }
-
