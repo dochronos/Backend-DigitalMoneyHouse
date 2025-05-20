@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -48,8 +49,11 @@ public class SecurityConfig {
     public static class SecretTokenValidationFilter extends OncePerRequestFilter {
 
         @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                throws ServletException, IOException {
+        protected void doFilterInternal(
+                @NonNull HttpServletRequest request,
+                @NonNull HttpServletResponse response,
+                @NonNull FilterChain filterChain
+        ) throws ServletException, IOException {
 
             String token = request.getHeader(SECRET_HEADER_NAME);
             System.out.println("Received Secret Token: " + token); // Debugging
@@ -57,11 +61,10 @@ public class SecurityConfig {
             if (SECRET_TOKEN.equals(token)) {
                 System.out.println("Secret token is valid, proceeding with request.");
 
-                // Configura el contexto de seguridad si el token es válido
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        "user", // Principal
-                        null, // Credentials
-                        Collections.emptyList() // Authorities
+                        "user",
+                        null,
+                        Collections.emptyList()
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

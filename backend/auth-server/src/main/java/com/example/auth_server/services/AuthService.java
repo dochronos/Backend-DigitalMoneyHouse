@@ -56,9 +56,11 @@ public class AuthService {
     }
 
     public void logoutUser(String token) {
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // Remover prefijo "Bearer "
+        if (token == null || !token.startsWith("Bearer ")) {
+            return; // Token nulo o malformado, salir sin hacer nada
         }
+
+        token = token.substring(7); // Remover prefijo "Bearer "
 
         if (!jwtTokenProvider.isTokenExpired(token)) {
             long expirationInSeconds = jwtTokenProvider.getExpirationDuration(token);

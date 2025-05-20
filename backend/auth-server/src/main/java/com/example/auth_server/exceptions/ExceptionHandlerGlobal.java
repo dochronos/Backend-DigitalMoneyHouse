@@ -17,6 +17,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ControllerAdvice
@@ -111,7 +112,12 @@ public class ExceptionHandlerGlobal {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
-        String error = e.getName() + " should be of type " + (e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "unknown");
+        String requiredType = Optional.ofNullable(e.getRequiredType())
+                                      .map(Class::getSimpleName)
+                                      .orElse("unknown");
+
+        String error = e.getName() + " should be of type " + requiredType;
+
         return buildErrorResponse(e, "MethodArgumentTypeMismatchException", HttpStatus.BAD_REQUEST, request.getRequestURI(), error);
     }
 

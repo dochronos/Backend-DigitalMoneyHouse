@@ -15,6 +15,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ControllerAdvice
@@ -38,12 +39,11 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "MethodArgumentNotValidException",
                 HttpStatus.BAD_REQUEST,
-                HttpStatus.BAD_REQUEST,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 errors
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -54,12 +54,11 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "MissingServletRequestParameterException",
                 HttpStatus.BAD_REQUEST,
-                HttpStatus.BAD_REQUEST,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 error
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -70,12 +69,11 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "HttpMessageNotReadableException",
                 HttpStatus.BAD_REQUEST,
-                HttpStatus.BAD_REQUEST,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 error
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
@@ -86,12 +84,11 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "NoHandlerFoundException",
                 HttpStatus.NOT_FOUND,
-                HttpStatus.NOT_FOUND,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 error
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -100,12 +97,11 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "ResourceNotFoundException (custom)",
                 HttpStatus.NOT_FOUND,
-                HttpStatus.NOT_FOUND,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 e.getMessage()
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -114,12 +110,11 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "BadRequestException (custom)",
                 HttpStatus.BAD_REQUEST,
-                HttpStatus.BAD_REQUEST,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 e.getMessage()
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(InternalServerErrorException.class)
@@ -128,12 +123,11 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "InternalServerErrorException (custom)",
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                HttpStatus.INTERNAL_SERVER_ERROR,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 e.getMessage()
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -147,28 +141,30 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "ConstraintViolationException",
                 HttpStatus.BAD_REQUEST,
-                HttpStatus.BAD_REQUEST,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 errors
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
-        String error = e.getName() + " should be of type " + e.getRequiredType().getSimpleName();
+        String requiredType = Optional.ofNullable(e.getRequiredType())
+                                      .map(Class::getSimpleName)
+                                      .orElse("unknown");
+
+        String error = e.getName() + " should be of type " + requiredType;
 
         APIErrorEntity apiError = new APIErrorEntity(
                 HANDLED_BY,
                 "MethodArgumentTypeMismatchException",
                 HttpStatus.BAD_REQUEST,
-                HttpStatus.BAD_REQUEST,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 error
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler(Exception.class)
@@ -177,11 +173,10 @@ public class ExceptionHandlerGlobal {
                 HANDLED_BY,
                 "Unhandled Exception",
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                HttpStatus.INTERNAL_SERVER_ERROR,
                 getRequestUri(request),
                 e.getLocalizedMessage(),
                 "Unexpected error occurred"
         );
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 }

@@ -22,50 +22,44 @@ public class AccountController {
 
     @PostMapping("/create-account")
     public ResponseEntity<AccountCreatedDTO> createAccount(@Valid @RequestBody UserDTO userDTO) {
-
         Account accountCreated = accountService.createAccount(userDTO);
-
         AccountCreatedDTO responseDTO = new AccountCreatedDTO(accountCreated);
-
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
-
 
     @GetMapping("/accounts/{userId}")
     public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long userId) {
         try {
             AccountDTO accountDTO = accountService.getAccountByUserId(userId);
-            return new ResponseEntity<>(accountDTO, HttpStatus.OK);
+            return ResponseEntity.ok(accountDTO);
         } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
     @PatchMapping("/accounts/{userId}")
     public ResponseEntity<AccountDTO> updateAccount(@PathVariable Long userId, @Valid @RequestBody UpdateDTO updateDTO) {
         try {
-            AccountDTO accountupdatedDTO = accountService.updateAccountByUserId(userId, updateDTO);
-            return new ResponseEntity<>(accountupdatedDTO, HttpStatus.OK);
+            AccountDTO accountUpdatedDTO = accountService.updateAccountByUserId(userId, updateDTO);
+            return ResponseEntity.ok(accountUpdatedDTO);
         } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PutMapping("/accounts/{userId}/balance")
     public ResponseEntity<AccountDTO> updateAccountBalance(@PathVariable Long userId, @RequestBody Double amount) {
         try {
-            System.out.println("Llegó al controlador");
             Account updatedAccount = accountService.updateAccountBalance(userId, amount);
-            return new ResponseEntity<>(new AccountDTO(updatedAccount), HttpStatus.OK); // Devuelve el DTO de la cuenta actualizada
+            return ResponseEntity.ok(new AccountDTO(updatedAccount));
         } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -73,9 +67,9 @@ public class AccountController {
     public ResponseEntity<List<AccountDTO>> getAllAccounts() {
         try {
             List<AccountDTO> accounts = accountService.getAllAccounts();
-            return new ResponseEntity<>(accounts, HttpStatus.OK);
+            return ResponseEntity.ok(accounts);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -85,18 +79,16 @@ public class AccountController {
             String cvu = request.getCvu();
             String alias = request.getAlias();
 
-            // Asegurarse de que al menos uno de los campos esté presente
             if (cvu == null && alias == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                return ResponseEntity.badRequest().build();
             }
 
-            // Llamar al servicio para obtener la cuenta usando el CVU o el alias
             AccountDTO accountDTO = accountService.getAccountByCvuOrAlias(cvu, alias);
-            return new ResponseEntity<>(accountDTO, HttpStatus.OK);
+            return ResponseEntity.ok(accountDTO);
         } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

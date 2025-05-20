@@ -19,3 +19,4 @@ com\example\accounts_server\exceptions\APIErrorEntity.class
 com\digitalmoney\accountservice\AccountsServerApplication.class
 com\example\accounts_server\dto\AccountCreatedDTO.class
 com\example\accounts_server\SecurityConfig$SecretTokenValidationFilter.class
+com\example\accounts_server\dto\AccountSearchRequest$AccountSearchRequestBuilder.class

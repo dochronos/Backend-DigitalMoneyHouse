@@ -1,12 +1,13 @@
 package com.example.auth_server.services;
 
 import com.example.auth_server.entities.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 
@@ -34,7 +35,7 @@ public class JwtTokenProvider {
                 .claim("email", user.getEmail())
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiry))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -45,8 +46,10 @@ public class JwtTokenProvider {
      * @return claims extraídos
      */
     public Claims getClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -70,5 +73,13 @@ public class JwtTokenProvider {
     public long getExpirationDuration(String token) {
         Date expirationDate = getClaims(token).getExpiration();
         return (expirationDate.getTime() - System.currentTimeMillis()) / 1000;
+    }
+
+    /**
+     * Devuelve la clave usada para firmar y verificar JWTs.
+     */
+    private Key getSigningKey() {
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
