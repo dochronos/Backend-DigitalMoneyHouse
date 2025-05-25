@@ -1,6 +1,5 @@
 package com.example.auth_server.exceptions;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class APIErrorEntity {
+
     private String handledBy;
     private String exception;
     private HttpStatus oriStatus;
@@ -40,5 +39,23 @@ public class APIErrorEntity {
             localizedMessage,
             Collections.singletonList(message)
         );
+    }
+
+    public APIErrorEntity(
+            String handledBy,
+            String exception,
+            HttpStatus oriStatus,
+            HttpStatus status,
+            String uri,
+            String localizedMessage,
+            List<String> messages
+    ) {
+        this.handledBy = handledBy;
+        this.exception = exception;
+        this.oriStatus = oriStatus;
+        this.status = status;
+        this.uri = uri;
+        this.localizedMessage = localizedMessage;
+        this.messages = messages;
     }
 }

@@ -26,7 +26,7 @@ public class ExceptionHandlerGlobal {
 
     private static final String EXCEPTION_HANDLED_BY = "(Rest)ResponseEntityExceptionHandler (@ControllerAdvice)";
 
-    private ResponseEntity<Object> buildErrorResponseList(
+    private ResponseEntity<Object> buildErrorResponse(
             Exception e,
             String exceptionName,
             HttpStatus status,
@@ -42,16 +42,18 @@ public class ExceptionHandlerGlobal {
                 e.getLocalizedMessage(),
                 messages
         );
+
         return ResponseEntity.status(status).body(apiError);
     }
 
-    private ResponseEntity<Object> buildErrorResponseSingle(
+    private ResponseEntity<Object> buildErrorResponse(
             Exception e,
             String exceptionName,
             HttpStatus status,
             String uri,
             String message) {
-        return buildErrorResponseList(e, exceptionName, status, uri, List.of(message));
+
+        return buildErrorResponse(e, exceptionName, status, uri, List.of(message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -66,7 +68,7 @@ public class ExceptionHandlerGlobal {
                 errors.add(error.getObjectName() + ": " + error.getDefaultMessage()));
 
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        return buildErrorResponseList(e, "MethodArgumentNotValidException (overriden)", HttpStatus.BAD_REQUEST, uri, errors);
+        return buildErrorResponse(e, "MethodArgumentNotValidException", HttpStatus.BAD_REQUEST, uri, errors);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -75,9 +77,8 @@ public class ExceptionHandlerGlobal {
                                                                        HttpStatus status,
                                                                        WebRequest request) {
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        String error = e.getParameterName() + " parameter is missing";
-
-        return buildErrorResponseSingle(e, "MissingServletRequestParameterException (overriden)", HttpStatus.BAD_REQUEST, uri, error);
+        return buildErrorResponse(e, "MissingServletRequestParameterException", HttpStatus.BAD_REQUEST, uri,
+                e.getParameterName() + " parameter is missing");
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -86,7 +87,7 @@ public class ExceptionHandlerGlobal {
                                                                HttpStatus status,
                                                                WebRequest request) {
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        return buildErrorResponseSingle(e, "HttpMessageNotReadableException (overriden)", HttpStatus.BAD_REQUEST, uri,
+        return buildErrorResponse(e, "HttpMessageNotReadableException", HttpStatus.BAD_REQUEST, uri,
                 "Request body inexistente o mal formado");
     }
 
@@ -97,22 +98,21 @@ public class ExceptionHandlerGlobal {
                                                        WebRequest request) {
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
         String error = "No handler found for " + e.getHttpMethod() + " " + e.getRequestURL();
-
-        return buildErrorResponseSingle(e, "NoHandlerFoundException (overriden)", HttpStatus.NOT_FOUND, uri, error);
+        return buildErrorResponse(e, "NoHandlerFoundException", HttpStatus.NOT_FOUND, uri, error);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFound(ResourceNotFoundException e,
                                                          WebRequest request) {
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        return buildErrorResponseSingle(e, "ResourceNotFoundException (custom)", HttpStatus.NOT_FOUND, uri, e.getMessage());
+        return buildErrorResponse(e, "ResourceNotFoundException", HttpStatus.NOT_FOUND, uri, e.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleBadRequest(BadRequestException e,
                                                    WebRequest request) {
         String uri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        return buildErrorResponseSingle(e, "BadRequestException (custom)", HttpStatus.BAD_REQUEST, uri, e.getMessage());
+        return buildErrorResponse(e, "BadRequestException", HttpStatus.BAD_REQUEST, uri, e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -124,7 +124,7 @@ public class ExceptionHandlerGlobal {
                 errors.add(violation.getRootBeanClass().getSimpleName() + " " +
                         violation.getPropertyPath() + ": " + violation.getMessage()));
 
-        return buildErrorResponseList(e, "ConstraintViolationException", HttpStatus.BAD_REQUEST, request.getRequestURI(), errors);
+        return buildErrorResponse(e, "ConstraintViolationException", HttpStatus.BAD_REQUEST, request.getRequestURI(), errors);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -136,12 +136,12 @@ public class ExceptionHandlerGlobal {
 
         String error = e.getName() + " should be of type " + requiredType;
 
-        return buildErrorResponseSingle(e, "MethodArgumentTypeMismatchException", HttpStatus.BAD_REQUEST, request.getRequestURI(), error);
+        return buildErrorResponse(e, "MethodArgumentTypeMismatchException", HttpStatus.BAD_REQUEST, request.getRequestURI(), error);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAll(Exception e, HttpServletRequest request) {
-        String error = "Unexpected error occurred";
-        return buildErrorResponseSingle(e, "Unhandled Exception", HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI(), error);
+        return buildErrorResponse(e, "Unhandled Exception", HttpStatus.INTERNAL_SERVER_ERROR,
+                request.getRequestURI(), "Unexpected error occurred");
     }
 }
