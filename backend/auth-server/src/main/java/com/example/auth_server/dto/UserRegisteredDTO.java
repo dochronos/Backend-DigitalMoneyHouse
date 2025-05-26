@@ -1,30 +1,73 @@
 package com.example.auth_server.dto;
 
-import com.example.auth_server.entities.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserRegisteredDTO {
 
-    private Long id;
+    @NotBlank
     private String firstName;
+
+    @NotBlank
     private String lastName;
+
+    @NotBlank
     private String dni;
+
+    @Email
+    @NotBlank
     private String email;
+
+    @NotBlank
     private String phone;
 
-    public static UserRegisteredDTO fromEntity(User user) {
-        return new UserRegisteredDTO(
-            user.getId(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getDni(),
-            user.getEmail(),
-            user.getPhone()
-        );
+    public UserRegisteredDTO() {}
+
+    public UserRegisteredDTO(String firstName, String lastName, String dni, String email, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dni = dni;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

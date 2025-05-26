@@ -15,4 +15,3 @@ com\example\auth_server\exceptions\APIErrorEntity.class
 com\example\auth_server\exceptions\InternalServerErrorException.class
 com\example\auth_server\SecurityConfig.class
 com\example\auth_server\dto\UserRegisteredDTO.class
-com\example\auth_server\entities\User$UserBuilder.class
