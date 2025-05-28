@@ -1,40 +1,56 @@
 package com.example.cards_server.dto;
 
-import com.example.cards_server.entities.Card;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class CardCreateDTO {
 
-    @NotBlank
     private String expiration;
-
-    @NotBlank
     private String number;
-
-    @NotBlank
     private String name;
-
-    @NotBlank
     private String cvc;
-
-    @NotNull
     private Long userId;
 
-    public CardCreateDTO(Card card) {
-        this.expiration = card.getExpiration();
-        this.number = card.getNumber();
-        this.name = card.getName();
-        this.cvc = card.getCvc();
-        this.userId = card.getUserId();
+    public String getExpiration() {
+        return expiration;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCvc() {
+        return cvc;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    // (Opcional) Setters, si son necesarios
+    public void setExpiration(String expiration) {
+        this.expiration = expiration;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCvc(String cvc) {
+        this.cvc = cvc;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

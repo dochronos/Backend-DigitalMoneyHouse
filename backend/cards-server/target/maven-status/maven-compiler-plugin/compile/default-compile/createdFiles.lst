@@ -1,7 +1,6 @@
 com\example\cards_server\clients\FeignConfig.class
 com\example\cards_server\exceptions\ExceptionHandlerGlobal.class
 com\example\cards_server\clients\UserClient.class
-com\example\cards_server\dto\CardDTO$CardDTOBuilder.class
 com\example\cards_server\dto\CardDTO.class
 com\example\cards_server\entities\Card.class
 com\example\cards_server\controllers\CardController.class
@@ -12,9 +11,7 @@ com\example\cards_server\repositories\CardRepository.class
 com\example\cards_server\services\CardService.class
 com\example\cards_server\SecurityConfig.class
 com\example\cards_server\exceptions\ResourceNotFoundException.class
-com\example\cards_server\entities\Card$CardBuilder.class
 com\example\cards_server\exceptions\APIErrorEntity.class
 com\example\cards_server\exceptions\CardAlreadyExistsException.class
 com\example\cards_server\dto\CardCreateDTO.class
-com\example\cards_server\dto\CardCreateDTO$CardCreateDTOBuilder.class
 com\example\cards_server\SecurityConfig$SecretTokenValidationFilter.class

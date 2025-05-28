@@ -50,7 +50,7 @@ public class CardService {
         });
 
         Card card = new Card(cardCreateDTO);
-        card.setUserId(userId);
+        card.setUserId(userId); // Este método sí debe existir
 
         Card savedCard = cardRepository.save(card);
 

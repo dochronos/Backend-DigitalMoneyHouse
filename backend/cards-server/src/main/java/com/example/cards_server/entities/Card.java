@@ -2,16 +2,9 @@ package com.example.cards_server.entities;
 
 import com.example.cards_server.dto.CardCreateDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
 
 @Entity
 @Table(name = "cards")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Card {
 
     @Id
@@ -19,24 +12,22 @@ public class Card {
     private Long id;
 
     @Column(name = "expiration", nullable = false)
-    @NotNull
     private String expiration;
 
     @Column(name = "number", nullable = false, unique = true)
-    @NotBlank
     private String number;
 
     @Column(name = "name", nullable = false)
-    @NotBlank
     private String name;
 
     @Column(name = "cvc", nullable = false)
-    @NotBlank
     private String cvc;
 
     @Column(name = "user_id", nullable = false)
-    @NotNull
     private Long userId;
+
+    public Card() {
+    }
 
     public Card(CardCreateDTO dto) {
         this.expiration = dto.getExpiration();
@@ -44,5 +35,50 @@ public class Card {
         this.name = dto.getName();
         this.cvc = dto.getCvc();
         this.userId = dto.getUserId();
+    }
+
+    // Getters y setters explícitos
+    public Long getId() {
+        return id;
+    }
+
+    public String getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(String expiration) {
+        this.expiration = expiration;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCvc() {
+        return cvc;
+    }
+
+    public void setCvc(String cvc) {
+        this.cvc = cvc;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
