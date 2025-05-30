@@ -5,13 +5,8 @@ import com.example.users_server.dto.UserRegistrationDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
 
-@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class User {
 
@@ -44,30 +39,101 @@ public class User {
     @NotBlank
     private String phone;
 
-    public User(UserRegistrationDTO userRegistrationDTO, String encodedPassword) {
-        this.firstName = userRegistrationDTO.getFirstName();
-        this.lastName = userRegistrationDTO.getLastName();
-        this.dni = userRegistrationDTO.getDni();
-        this.email = userRegistrationDTO.getEmail();
-        this.password = encodedPassword;
-        this.phone = userRegistrationDTO.getPhone();
+    public User() {
     }
 
-    public void update(UserDTO userUpdateDTO) {
-        if (userUpdateDTO.getFirstName() != null) {
-            this.firstName = userUpdateDTO.getFirstName();
+    public User(Long id, String firstName, String lastName, String dni, String email, String password, String phone) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dni = dni;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+    }
+
+    public User(UserRegistrationDTO dto, String encodedPassword) {
+        this.firstName = dto.getFirstName();
+        this.lastName = dto.getLastName();
+        this.dni = dto.getDni();
+        this.email = dto.getEmail();
+        this.password = encodedPassword;
+        this.phone = dto.getPhone();
+    }
+
+    public void update(UserDTO dto) {
+        if (dto.getFirstName() != null) {
+            this.firstName = dto.getFirstName();
         }
-        if (userUpdateDTO.getLastName() != null) {
-            this.lastName = userUpdateDTO.getLastName();
+        if (dto.getLastName() != null) {
+            this.lastName = dto.getLastName();
         }
-        if (userUpdateDTO.getDni() != null) {
-            this.dni = userUpdateDTO.getDni();
+        if (dto.getDni() != null) {
+            this.dni = dto.getDni();
         }
-        if (userUpdateDTO.getEmail() != null) {
-            this.email = userUpdateDTO.getEmail();
+        if (dto.getEmail() != null) {
+            this.email = dto.getEmail();
         }
-        if (userUpdateDTO.getPhone() != null) {
-            this.phone = userUpdateDTO.getPhone();
+        if (dto.getPhone() != null) {
+            this.phone = dto.getPhone();
         }
+    }
+
+    // Getters y Setters explícitos
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

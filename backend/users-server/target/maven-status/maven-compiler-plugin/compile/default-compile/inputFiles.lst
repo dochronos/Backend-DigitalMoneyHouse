@@ -14,5 +14,7 @@ C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_s
 C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_server\dto\AccountCreatedDTO.java
 C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_server\entities\User.java
 C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_server\UsersServerApplication.java
+C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_server\dto\AccountClient.java
+C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_server\dto\AccountDTO.java
 C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_server\exceptions\BadRequestException.java
 C:\Users\do_ch\DMHBackend\backend\users-server\src\main\java\com\example\users_server\repositories\UserRepository.java
