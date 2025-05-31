@@ -117,7 +117,7 @@ public class ActivityServiceImpl implements ActivityService {
 
         AccountDTO updatedOriginAccount = accountClient.updateAccountBalance(userId, transferRequest.getAmount());
         AccountDTO updatedDestinationAccount = accountClient.updateAccountBalance(
-                Long.valueOf(destinationAccount.getUserId()), Math.abs(transferRequest.getAmount()));
+                destinationAccount.getUserId(), Math.abs(transferRequest.getAmount()));
 
         Activity originActivity = new Activity();
         originActivity.setUserId(userId);
@@ -131,8 +131,8 @@ public class ActivityServiceImpl implements ActivityService {
         activityRepository.save(originActivity);
 
         Activity destinationActivity = new Activity();
-        destinationActivity.setUserId(Long.valueOf(destinationAccount.getUserId()));
-        destinationActivity.setAmount(Math.abs(transferRequest.getAmount()));
+        destinationActivity.setUserId(destinationAccount.getUserId());
+        destinationActivity.setAmount(transferRequest.getAmount());
         destinationActivity.setOrigin(updatedOriginAccount.getAlias());
         destinationActivity.setDestination(updatedDestinationAccount.getAlias());
         destinationActivity.setType(TRANSFER_TYPE);

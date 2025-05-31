@@ -1,22 +1,43 @@
 package com.example.accounts_server.dto;
 
 import com.example.accounts_server.entities.Account;
-import lombok.Data;
 
-@Data
 public class AccountCreatedDTO {
-    private Long userId;
-    private Double balance;
+
+    private Long id;
     private String cvu;
     private String alias;
-    private String name;
 
-    public AccountCreatedDTO(Account account){
-        this.userId = account.getUserId();
-        this.balance = account.getBalance();
-        this.cvu = account.getCvu();
-        this.alias = account.getAlias();
-        this.name = account.getName();
+    public AccountCreatedDTO() {
     }
 
+    public AccountCreatedDTO(Account account) {
+        this.id = account.getId();
+        this.cvu = account.getCvu();
+        this.alias = account.getAlias();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getCvu() {
+        return cvu;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCvu(String cvu) {
+        this.cvu = cvu;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 }
